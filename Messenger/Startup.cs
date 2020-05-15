@@ -4,9 +4,12 @@ using EventFlow.DependencyInjection.Extensions;
 using EventFlow.EventStores.EventStore.Extensions;
 using EventFlow.Extensions;
 using EventFlow.MongoDB.Extensions;
+using EventFlow.Subscribers;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
 using Messenger.Eventflow.Messaging;
+using Messenger.Eventflow.Messaging.Events;
+using Messenger.Eventflow.Messaging.Subscriber;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +48,7 @@ namespace Messenger
             services.AddEventFlow(o =>
             {
                 o.AddDefaults(typeof(Program).Assembly); //Reinladen der Assembly (Projekt wo Commands, Handler und Events sind, können auch mehrere Projekte sein)
+                o.Configure(c => c.IsAsynchronousSubscribersEnabled = true); //Enable subscribers
 
                 o.UseEventStoreEventStore(new Uri(eventflowDatabasesettings.EventStoreUri), connectionSettings);//Eventstore einrichten
                 o.ConfigureMongoDb(eventflowDatabasesettings.MongoDBUri, eventflowDatabasesettings.DatabaseReadModels); //MOngoDb einrichten

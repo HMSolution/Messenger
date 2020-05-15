@@ -1,28 +1,35 @@
 ﻿using System.Collections.Generic;
 using EventFlow.Aggregates;
 using Messenger.Eventflow.Messaging.Events;
+using Messenger.Eventflow.Messaging.ValueObjects;
 
 namespace Messenger.Eventflow.Messaging
 {
-    public class MessagingAggregate : AggregateRoot<MessagingAggregate, UnterhaltungId>,
+    public class MessagingAggregate : AggregateRoot<MessagingAggregate, ConversationId>,
         IApply<ConversationCreated>, //Event registrieren
-        IApply<MessageAdded>
+        IApply<MessageAdded>,
+        IApply<NpcMessageAdded>
     {
-        public MessagingAggregate(UnterhaltungId id) 
+        public MessagingAggregate(ConversationId id) 
             : base(id)
         {
         }
 
-        public List<string> Messages { get; set; }
+        public List<Message> Messages { get; set; }
 
         public void CreateCoversation()
         {
             Emit(new ConversationCreated()); // Event aggregieren
         }
 
-        public void AddMessage(string message)
+        public void AddMessage(Message message)
         {
             Emit(new MessageAdded(message));
+        }
+
+        public void AddNpcMessage(Message message)
+        {
+            Emit(new NpcMessageAdded(message));
         }
 
         public void Apply(ConversationCreated aggregateEvent)
@@ -33,9 +40,14 @@ namespace Messenger.Eventflow.Messaging
         {
             if (Messages == null)
             {
-                Messages = new List<string>();
+                Messages = new List<Message>();
             }
 
+            Messages.Add(aggregateEvent.Message);
+        }
+
+        public void Apply(NpcMessageAdded aggregateEvent)
+        {
             Messages.Add(aggregateEvent.Message);
         }
     }

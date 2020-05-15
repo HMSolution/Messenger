@@ -8,19 +8,21 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome to your messaging App</h1>
+    <br/>
 </div>
 
 <div>
-    <h4>Aktuelle Unterhaltung</h4>
+    <h4>Current conversation</h4>
 </div>
 
 <form method="post">
-    <input placeholder="Deine Nachricht..." type="text" asp-for="Message" />
+    <input placeholder="Your Name..." type="text" asp-for="UserName"/>
+    <input placeholder="Your message..." type="text" asp-for="Message"/>
     <button type="submit">Send Message</button>
 </form>
 
 
 @foreach (var message in @Model.Messages)
 {
-    <span>@message</span><br/>
+    <span>[@message.Sender]:</span>@message.MessageString<br/>
 }

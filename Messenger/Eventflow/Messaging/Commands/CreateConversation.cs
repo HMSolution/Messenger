@@ -2,9 +2,9 @@
 
 namespace Messenger.Eventflow.Messaging.Commands
 {
-    public class CreateConversation : Command<MessagingAggregate, UnterhaltungId>
+    public class CreateConversation : Command<MessagingAggregate, ConversationId>
     {
-        public CreateConversation(UnterhaltungId id) //The command itself serves as a data container, even an empty one would contain a specific action
+        public CreateConversation(ConversationId id) //The command itself serves as a data container, even an empty one would contain a specific action
             : base(id)
         {
         }

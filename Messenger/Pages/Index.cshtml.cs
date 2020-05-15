@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow;
 using EventFlow.Queries;
-using Messenger.Eventflow;
 using Messenger.Eventflow.Messaging;
 using Messenger.Eventflow.Messaging.Commands;
+using Messenger.Eventflow.Messaging.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,13 +18,14 @@ namespace Messenger.Pages
         private readonly ILogger<IndexModel> _logger;
         public ICommandBus CommandBus { get; set; }
         public IQueryProcessor QueryProcessor { get; set; }
-
+        [BindProperty]
+        public string UserName { get; set; }
         [BindProperty]
         public string Message { get; set; }
         [BindProperty]
         public string Id { get; set; }
 
-        public List<string> Messages { get; set; }
+        public List<Message> Messages { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ICommandBus commandBus, IQueryProcessor queryProcessor)
         {
@@ -37,26 +36,28 @@ namespace Messenger.Pages
 
         public async Task OnGet()
         {
-            UnterhaltungId identity;
-            var test = GetString("identity"); //identity aus der Session holen
+            this.UserName = GetString("UserName");
+
+            ConversationId identity;
+            var test = GetString("identity"); //get identity from current conversation in session
             if (test == null)
             {
-                identity = UnterhaltungId.New;
-                HttpContext.Session.SetString("identity", identity.ToString()); // identity in der Session speichern
+                identity = ConversationId.New;
+                SetString("identity", identity.ToString()); // save identity to session
                 var command = new CreateConversation(identity);
-                await CommandBus.PublishAsync(command, CancellationToken.None); //Command an Handler transferieren => siehe CommandHandler
+                await CommandBus.PublishAsync(command, CancellationToken.None); //transferring command to its handler
             }
             else
             {
-                identity = new UnterhaltungId(test);
+                identity = new ConversationId(test);
             }
 
             var result = await QueryProcessor.ProcessAsync(new ReadModelByIdQuery<ConversationReadModel>(identity),
-                CancellationToken.None); // ReadModelByIDQuery wird von EventFlow out of the Box geliefert, um ReadModel zu querien
+                CancellationToken.None); // ReadModelByIDQuery is out of the box in Event Flow for quering read models
 
             if (result.Messages == null)
             {
-                Messages = new List<string>();
+                Messages = new List<Message>();
             }
             else
             {
@@ -66,8 +67,9 @@ namespace Messenger.Pages
 
         public async Task<IActionResult> OnPost()
         {
-            var identity = new UnterhaltungId(GetString("identity"));
-            var command = new AddMessage(identity, Message);
+            SetString("UserName", UserName);
+            var identity = new ConversationId(GetString("identity"));
+            var command = new AddMessage(identity, new Message(Message, UserName));
             await CommandBus.PublishAsync(command, CancellationToken.None);
 
             return this.RedirectToPage("Index");
@@ -76,6 +78,11 @@ namespace Messenger.Pages
         public string GetString(string key)
         {
             return HttpContext.Session.GetString(key);
+        }
+
+        public void SetString(string key, string value)
+        {
+            HttpContext.Session.SetString(key, value);
         }
     }
 }
