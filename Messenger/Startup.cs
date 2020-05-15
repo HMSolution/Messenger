@@ -49,7 +49,7 @@ namespace Messenger
                 o.UseEventStoreEventStore(new Uri(eventflowDatabasesettings.EventStoreUri), connectionSettings);//Eventstore einrichten
                 o.ConfigureMongoDb(eventflowDatabasesettings.MongoDBUri, eventflowDatabasesettings.DatabaseReadModels); //MOngoDb einrichten
 
-                o.UseMongoDbReadModel<UnterhaltungReadModel>(); //ReadModel registrieren
+                o.UseMongoDbReadModel<ConversationReadModel>(); //ReadModel registrieren
 
                 o.AddAspNetCore(); //Asp.Net core bootstrapper verwenden (startet den IBootstrapper von Eventflow), ab core 3.0 notwendig
             });

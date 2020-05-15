@@ -43,7 +43,7 @@ namespace Messenger.Pages
             {
                 identity = UnterhaltungId.New;
                 HttpContext.Session.SetString("identity", identity.ToString()); // identity in der Session speichern
-                var command = new ErstelleUnterhaltung(identity);
+                var command = new CreateConversation(identity);
                 await CommandBus.PublishAsync(command, CancellationToken.None); //Command an Handler transferieren => siehe CommandHandler
             }
             else
@@ -51,7 +51,7 @@ namespace Messenger.Pages
                 identity = new UnterhaltungId(test);
             }
 
-            var result = await QueryProcessor.ProcessAsync(new ReadModelByIdQuery<UnterhaltungReadModel>(identity),
+            var result = await QueryProcessor.ProcessAsync(new ReadModelByIdQuery<ConversationReadModel>(identity),
                 CancellationToken.None); // ReadModelByIDQuery wird von EventFlow out of the Box geliefert, um ReadModel zu querien
 
             if (result.Messages == null)
@@ -67,7 +67,7 @@ namespace Messenger.Pages
         public async Task<IActionResult> OnPost()
         {
             var identity = new UnterhaltungId(GetString("identity"));
-            var command = new MessageHinzufügen(identity, Message);
+            var command = new AddMessage(identity, Message);
             await CommandBus.PublishAsync(command, CancellationToken.None);
 
             return this.RedirectToPage("Index");

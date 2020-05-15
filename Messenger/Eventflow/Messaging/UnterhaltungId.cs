@@ -2,7 +2,7 @@
 
 namespace Messenger.Eventflow.Messaging
 {
-    public class UnterhaltungId : Identity<UnterhaltungId> //Aggregatsidentität, über die Events laufen und ReadModel gequeriet werden
+    public class UnterhaltungId : Identity<UnterhaltungId> //AggregateIdentity over this events are emitted and read models queried
     {
         public UnterhaltungId(string value) : base(value)
         {
