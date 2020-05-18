@@ -16,8 +16,8 @@ namespace Messenger.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public ICommandBus CommandBus { get; set; }
-        public IQueryProcessor QueryProcessor { get; set; }
+        public ICommandBus CommandBus { get; }
+        public IQueryProcessor QueryProcessor { get; }
         [BindProperty]
         public string UserName { get; set; }
         [BindProperty]
@@ -36,7 +36,15 @@ namespace Messenger.Pages
 
         public async Task OnGet()
         {
-            this.UserName = GetString("UserName");
+
+            if (this.UserName == null)
+            {
+                this.UserName = GetString("UserName");
+                if (this.UserName == null)
+                {
+                    this.UserName = "ShyGuy";
+                }
+            }
 
             ConversationId identity;
             var test = GetString("identity"); //get identity from current conversation in session

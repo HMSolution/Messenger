@@ -8,8 +8,8 @@ namespace Messenger.Eventflow.Messaging.ValueObjects
 {
     public class Message : ValueObject
     {
-        public string MessageString { get; set; }
-        public string Sender { get; set; }
+        public string MessageString { get; }
+        public string Sender { get; }
 
         public Message(string message, string sender)
         {
