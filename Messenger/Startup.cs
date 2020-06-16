@@ -7,6 +7,7 @@ using EventFlow.MongoDB.Extensions;
 using EventFlow.Subscribers;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
+using Infrastructure;
 using Messenger.Eventflow.Messaging;
 using Messenger.Eventflow.Messaging.Events;
 using Messenger.Eventflow.Messaging.Subscriber;
