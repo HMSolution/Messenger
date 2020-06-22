@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EventFlow.ValueObjects;
+﻿using EventFlow.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Messenger.Eventflow.Messaging.ValueObjects
 {
     public class Message : ValueObject
     {
-        public string MessageString { get; }
-        public string Sender { get; }
+        public string MessageString { get; set; }
+        public string Sender { get; set; }
 
         public Message(string message, string sender)
         {
