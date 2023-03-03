@@ -10,7 +10,7 @@
     <PackageReference Include="EventFlow.DependencyInjection" Version="0.79.4216" />
     <PackageReference Include="EventFlow.EventStores.EventStore" Version="0.79.4216" />
     <PackageReference Include="EventFlow.MongoDB" Version="0.79.4216" />
-    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
   </ItemGroup>
 
 </Project>
